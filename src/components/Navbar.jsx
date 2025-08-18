@@ -15,10 +15,10 @@ const Navbar = () => {
   return (
     <div className='w-full h-16 md:h-20 flex items-center justify-between'>
         {/* Logo  */}
-        <div>
-            {/* <Image src="logo.png" alt="logo" w="32" /> */}
-            <img src="/logo.png" alt="LOGO" width="60" />
-        </div>
+        <a href="/">
+            <Image src="blg-brand.png" alt="logo" w="80" />
+            {/* <img src="/logo.png" alt="LOGO" width="60" /> */}
+        </a>
         {/* Mobile Menu */}
         <div className="md:hidden">
             <div className="cursor-pointer"
