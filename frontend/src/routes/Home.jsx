@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import MainCats from '../components/MainCats'
 import FeaturedPosts from '../components/FeaturedPosts'
+import PostList from '../components/PostList'
 
 function Home() {
   return (
@@ -26,7 +27,7 @@ function Home() {
 
             {/* animated button  */}
 
-            <Link to="\write" className='relative hidden md:block'>
+            <Link to="/write" className='relative hidden md:block'>
               
               <svg
                 viewBox='0 0 200 200'
@@ -64,6 +65,14 @@ function Home() {
         {/* FEATURED POSTS */}
         <FeaturedPosts />
         {/* POST LIST  */}
+
+        <div>
+            <h1 className="my-8 text-2xl text-gray-500">Recent Posts</h1>
+
+            <PostList />
+            
+        </div>
+
     </div>
   )
 }

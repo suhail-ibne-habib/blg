@@ -13,6 +13,12 @@ function Image({src, className, w, h, alt}) {
                 lqip={{ active: true, quality: 20}}
                 width={w}
                 h={h}
+                transformation={[
+                  {
+                    width: w,
+                    height: h,
+                  }
+                ]}
             />
   )
 }
