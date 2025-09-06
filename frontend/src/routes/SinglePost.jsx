@@ -1,36 +1,62 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import Image from '../components/Image'
 import PostMenuActions from '../components/PostMenuActions'
 import Search from '../components/Search'
 import Comments from '../components/Comments'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import { format } from 'timeago.js'
+import DOMPurify from 'dompurify'
+
+const fetchPost = async (slug) => {
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/posts/${slug}`)
+  return res.data
+};
 
 function SinglePost() {
+
+  const slug = useParams().slug;
+
+  const {isPending, error, data} = useQuery({
+    queryKey: ['post', slug],
+    queryFn: () => fetchPost(slug)
+  });
+
+  if( isPending ) return "Loading.....";
+
+  if( error ) return "An error has occurred: " + error.message;
+
+  if( !data ) return "Post not found";
+
   return (
     <div className="flex flex-col gap-8">
 
       {/* Details  */}
-      <div className="flex gap-8">
+      <div className="flex flex-col-reverse gap-8">
 
-        <div className="lg:w-3/4 flex flex-col gap-8">
-          <h1 className='text-xl md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold' >Lorem ipsum dolor, sit amet consectetur adipisicing elit.</h1>
+        <div className="w-full flex flex-col gap-8">
+          <h1 className='text-xl md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold' >{data.title}</h1>
+
+          <p className='text-gray-500 font-medium'>{data.desc}</p>
 
           <div className="flex items-center gap-2 text-gray-400 text-sm">
               <span>Written by</span>
-              <Link className='text-blue-800'>John Doe</Link>
+              <Link className='text-blue-800'>{data.author.username}</Link>
               <span>on</span>
-              <Link className='text-blue-800'>Web Design</Link>
-              <span>2 days ago</span>
+              <Link className='text-blue-800'>{data.category}</Link>
+              <span> {format(data.createdAt)}</span>
           </div>
 
-          <p className='text-gray-500 font-medium'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda iure commodi veniam in vero quis illum dolores, ducimus facilis neque placeat esse minus, unde ut fugiat. Dicta incidunt expedita repellendus?</p>
 
         </div>
 
-        <div className="hidden lg:block w-2/5">
+        <div className="hidden lg:block w-full">
 
-          <Image src="postImg.jpeg" className="rounded-2xl"/>
+          {
+            data.cover && <Image src={data.cover} className="rounded-2xl w-full h-[400px] object-cover object-center"/>
+          }
 
         </div>
 
@@ -40,14 +66,7 @@ function SinglePost() {
 
       <div className="flex flex-col md:flex-row gap-8">
 
-          <div className="lg:text-lg flex flex-col gap-6 text-justify">
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis. Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.</p>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis. Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.</p>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis. Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.</p>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis. Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.</p>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis. Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.</p>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis. Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aspernatur nostrum sint! Commodi ducimus aspernatur quisquam veniam debitis enim voluptatibus quod, sunt iste magnam veritatis beatae esse accusamus voluptatum reiciendis.</p>
-          </div>
+          <div className="lg:text-lg flex flex-col gap-6 text-justify" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.content) }}></div>
 
           {/* Menu  */}
 
@@ -58,16 +77,19 @@ function SinglePost() {
 
               <div className="flex items-center gap-8">
 
-                <Image src="userImg.jpeg" className="w-12 h-12 rounded-full object-cover" w="48" h="48" />
+                {
+                  data.author.img === "" ? <Image src="userImg.jpeg" className="w-12 h-12 rounded-full object-cover" w="48" h="48" /> :
+                  <img src={data.author.img} className="w-12 h-12 rounded-full object-cover" w="48" h="48" />
+                }
 
-                <Link className='text-blue-800'>John Doe</Link>
+                <Link className='text-blue-800'>{data.author.username}</Link>
 
 
               </div>
               
               <p className='text-sm gray-500'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam iste ipsam</p>
 
-              <div className="flex flex-gap-2">
+              {/* <div className="flex flex-gap-2">
 
                 <Link>
                   <Image src="facebook.svg"/>
@@ -77,7 +99,7 @@ function SinglePost() {
                   <Image src="instagram.svg" />
                 </Link>
                 
-              </div>
+              </div> */}
 
             </div>
 
@@ -85,7 +107,7 @@ function SinglePost() {
 
             <h1 className="mt-8 mb-4 text-sm font-medium">Actions</h1>
 
-            <PostMenuActions />
+            <PostMenuActions post={data} />
 
             <h1 className="mt-8 mb-4 text-sm font-medium">Categories</h1>
 
@@ -106,7 +128,7 @@ function SinglePost() {
 
       </div>
 
-      <Comments />
+      <Comments postId={data._id} />
 
     </div>
   )

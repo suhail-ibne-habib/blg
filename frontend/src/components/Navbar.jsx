@@ -1,16 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from './Image'
 import {
-  SignInButton,
   SignedIn,
   SignedOut,
   UserButton,
+  useAuth
 } from '@clerk/clerk-react'
 import { Link } from 'react-router-dom'
 
 const Navbar = () => {
 
     const [open, setOpen] = useState()
+
+    const { getToken, isLoaded: authLoaded } = useAuth();
+
+    useEffect(() => {
+        if (!authLoaded) return; // wait until both are ready
+
+        const fetchData = async () => {
+        const token = await getToken();
+        console.log("Token:", token);
+
+        };
+
+        fetchData();
+    }, [authLoaded, getToken]);
 
   return (
     <div className='w-full h-16 md:h-20 flex items-center justify-between'>
@@ -47,11 +61,11 @@ const Navbar = () => {
         </div>
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium">
-            <a href="">Home</a>
-            <a href="">Trending</a>
-            <a href="">Most Popular</a>
-            <a href="">About</a>
-            
+            <Link to="/">Home</Link>
+            <Link to="/">Trending</Link>
+            <Link to="/">Most Popular</Link>
+            <Link to="/">About</Link>
+
             <SignedOut>
                 <Link to='login'>
                     <button className='py-2 px-4 rounded-3xl bg-blue-700 text-white'>Login</button>
