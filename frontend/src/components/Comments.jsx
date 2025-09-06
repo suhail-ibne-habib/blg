@@ -100,7 +100,7 @@ const Comments = ({ postId }) => {
         )}
 
         {comments?.map((comment) => (
-          <Comment key={comment._id} comment={comment} />
+          <Comment key={comment._id} comment={comment} postId={postId} />
         ))}
       </>
       <div className="mb-2"></div>

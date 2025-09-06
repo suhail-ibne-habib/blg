@@ -7,13 +7,55 @@ export const getPosts = async ( req, res ) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 2;
 
-    const posts = await Post.find()
-      .populate("author", "username")
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .sort({ createdAt: -1 });
+    const query = {}
 
-    const totalPosts = await Post.countDocuments();
+    const cat = req.query.cat;
+    const author = req.query.author;
+    const searchQuery = req.query.search;
+    const sortQuery = req.query.sort || 'newest'
+
+    if( cat ){
+        query.category = { $regex: `^${cat}$`, $options: 'i' };
+    }
+
+    if( searchQuery ){
+        query.title = { $regex: searchQuery, $options: 'i' }
+    }
+
+    if( author ){
+        const user = await User.findOne({ username: author }).select('_id');  
+        if( !user ){
+            return res.status(404).json({ message: "Author not found" });
+        }
+        query.author = user._id;
+    }
+
+    let sortObj = { createdAt: -1 }; // default sorting by newest
+
+    if( sortQuery ){
+        // default sorting by newest
+        switch( sortQuery ){
+            case 'newest':
+                sortObj = { createdAt: -1 }; // default sorting by newest
+                break;
+            case 'oldest':
+                sortObj = { createdAt: 1 };
+                break;
+            case 'popular':
+                sortObj = { visits: -1 };
+                break;
+            default:
+                break;
+        }
+    }
+
+    const posts = await Post.find(query)
+      .populate("author", "username")
+      .sort(sortObj)
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const totalPosts = await Post.countDocuments(query);
     const hasMore = totalPosts > page * limit;
 
     res.status(200).json({ posts, hasMore });
@@ -73,6 +115,13 @@ export const deletePost = async ( req, res ) => {
 
     if( !clerkUserId ){
         return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const role = req.auth().sessionClaims?.metadata?.role || "user";
+
+    if( role === "admin" ){
+        await Post.findByIdAndDelete(req.params.id);
+        return res.status(204).json("Post has been deleted!");
     }
 
     const user = await User.findOne( {clerkUserId} );

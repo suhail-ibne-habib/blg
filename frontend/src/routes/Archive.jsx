@@ -1,10 +1,15 @@
 import React, { useState } from 'react'
 import PostList from '../components/PostList'
 import { SideMenu } from '../components/SideMenu'
+import { useParams } from 'react-router-dom'
 
 function Archive() {
 
   const [ open, setOpen ] = useState( false )
+
+  const param = useParams()
+
+  console.log(param)
 
   return (
     <div className="">

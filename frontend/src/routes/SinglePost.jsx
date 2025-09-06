@@ -47,6 +47,7 @@ function SinglePost() {
               <span>on</span>
               <Link className='text-blue-800'>{data.category}</Link>
               <span> {format(data.createdAt)}</span>
+              <span>Visits: {data.visits}</span>
           </div>
 
 
@@ -112,12 +113,12 @@ function SinglePost() {
             <h1 className="mt-8 mb-4 text-sm font-medium">Categories</h1>
 
             <div className="flex flex-col gap-2 text-sm">
-              <Link className='underline'>All</Link>
-              <Link className='underline' to="/">Web Design</Link>
-              <Link className='underline' to="/">Development</Link>
-              <Link className='underline' to="/">Database</Link>
-              <Link className='underline' to="/">Search Engine</Link>
-              <Link className='underline' to="/">Marketing</Link>
+              <Link className="underline" to="/posts">All</Link>
+              <Link className="underline" to="/posts?cat=web-design">Web Design</Link>
+              <Link className="underline" to="/posts?cat=development">Development</Link>
+              <Link className="underline" to="/posts?cat=databases">Databases</Link>
+              <Link className="underline" to="/posts?cat=seo">Search Engines</Link>
+              <Link className="underline" to="/posts?cat=marketing">Marketing</Link>
             </div>
 
             <h1 className="mt-8 mb-4 text-sm font-medium">Search</h1>

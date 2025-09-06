@@ -28,6 +28,7 @@ const PostMenuActions = ({post}) => {
     });
 
     const isSaved = savedPosts?.data?.some( p => p === post._id) || false;
+    const isAdmin = user?.publicMetadata?.role === 'admin';
 
     const deleteMutation = useMutation({
         mutationFn: async()=> {
@@ -110,7 +111,7 @@ const PostMenuActions = ({post}) => {
         }
 
         {
-            isSignedIn && user?.username === post?.author.username && (
+            isSignedIn && ( user?.username === post?.author.username || isAdmin ) && (
 
                 <div onClick={handleDelete} className="flex items-center gap-2 py-2 text-sm cursor-pointer">
 

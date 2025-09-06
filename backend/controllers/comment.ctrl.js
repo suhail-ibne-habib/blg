@@ -49,6 +49,15 @@ export const deleteComment = async ( req, res ) => {
         return res.status(401).json({ message: "Unauthorized" });
     }
 
+    const role = req.auth().sessionClaims?.metadata?.role || "user";
+
+    console.log("Role: ", role);
+    
+    if( role === "admin" ){
+        await Comment.findByIdAndDelete(req.params.id);
+        return res.status(204).json("Post has been deleted!");
+    }
+
     const author = await User.findOne({ clerkUserId });
 
     if( !author ){

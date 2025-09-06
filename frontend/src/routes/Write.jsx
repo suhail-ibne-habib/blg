@@ -8,6 +8,7 @@ import {useNavigate} from 'react-router-dom'
 import {toast} from 'react-toastify' 
 import Upload from '../components/Upload'
 import { useEffect } from 'react'
+import { motion } from "framer-motion";
 
 function Write() {
 
@@ -76,10 +77,22 @@ function Write() {
 
       <form onSubmit={handleSubmit} action="" className='flex flex-col gap-6 flex-1 mb-6'>
 
-        <Upload setData={setCover} setProgress={setProgress} type="image">
-            <button type='button' className='w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white'>Add a cover image</button>
-        </Upload>
+        <div className="mt-4 w-64 h-40 border-2 border-gray-300 rounded-xl overflow-hidden relative">
+          {progress > 0 && progress < 100 && (
+            <div className="absolute top-0 left-0 w-full h-full bg-blue-200/50 flex items-center justify-center">
+              <span className="text-blue-700 font-semibold">{progress}%</span>
+            </div>
+          )}
+          {cover && (
+            <img
+              src={cover.url}
+              alt="Uploaded"
+              className="w-full h-full object-cover"
+            />
+          )}
+      </div>
 
+        <Upload setData={setCover} setProgress={setProgress} type="image"> <button type='button' className='w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white'>Add a cover image</button> </Upload>
 
         <input type="text" className='text-4xl font-semibold bg-transparent outline-none' placeholder="My Awesome Story" name="title" id="" />
 
@@ -92,7 +105,7 @@ function Write() {
             <option value="web-design">Web Design</option>
             <option value="development">Development</option>
             <option value="databases">Databases</option>
-            <option value="search-engines">Search Enginges</option>
+            <option value="seo">Search Enginges</option>
             <option value="marketing">Marketing</option>
           </select>
 
